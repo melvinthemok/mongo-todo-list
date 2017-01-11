@@ -1,22 +1,30 @@
 const uuidGenerator = require('uuid/v4')
 const fs = require('fs')
 
-// load todos from the file
-var todos = require('../data.json').todos
+let todos = require('../data.json').todos
 
-// save todos to the file
 function save () {
   const json = JSON.stringify({ todos: todos })
-  fs.writeFile('data.json', json, 'utf8')
+  fs.writeFileSync('data.json', json, 'utf8')
 }
+
 // CREATE - params should be an object with keys for name, description and completed
 function create (params) {
-  todos.push({
-    _id: uuidGenerator(),
-    name: params.name
-  })
-  save()
-  return true
+  if (typeof params === 'object' && params.name.length >= 5) {
+    let newTodo = {
+      _id: uuidGenerator(),
+      name: params.name,
+      description: params.description || params.name,
+      completed: params.completed || false
+    }
+
+    todos.push(newTodo)
+
+    save()
+    return true
+  } else {
+    return false
+  }
 }
 
 // READ (list & show)
@@ -24,20 +32,29 @@ function list () {
   return todos
 }
 function show (id) {
-  return todos.filter((elem) => {
-    return elem._id === id
-  })[0] || null
+  for (var i = 0; i < todos.length; i++) {
+    if (id === todos[i]._id) {
+      return todos[i]
+    }
+  }
+  return null
 }
 
 // UPDATE - params should be an object with KVPs for the fields to update
-function update (id, updatedParams) {
-  const todo = todos.filter((elem) => {
-    return elem._id === id
-  })[0]
-  if (todo) {
-    todo.name = updatedParams.name
-    todo.description = updatedParams.description
-    todo.completed = updatedParams.completed
+function update (id, params) {
+  let todo = show(id)
+
+  if (todo && typeof params === 'object') {
+    if ((params.name && params.name.length < 5) || params.name === '') {
+      return false
+    }
+
+    todo.name = params.name || todo.name
+    todo.description = params.description || todo.description
+    if (typeof params.completed === 'boolean') {
+      todo.completed = params.completed
+    }
+
     save()
     return true
   }
@@ -46,14 +63,20 @@ function update (id, updatedParams) {
 
 // DESTROY (destroy & destroyAll)
 function destroy (id) {
-  todos = todos.filter((elem) => {
-    return elem._id !== id
-  })
-  save()
-  return true
+  for (var i = 0; i < todos.length; i++) {
+    if (id === todos[i]._id) {
+      todos.splice(i, 1)
+
+      save()
+      return true
+    }
+  }
+  return false
 }
+
 function destroyAll () {
-  todos = []
+  todos.length = 0
+
   save()
   return true
 }
