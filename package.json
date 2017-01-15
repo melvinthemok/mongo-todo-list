@@ -12,6 +12,18 @@
     "url": "git+https://github.com/wdi-sg/tdd-todo-list.git"
   },
   "dependencies": {
+    "mongoose": "^4.7.6",
     "uuid": "^3.0.1"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/wdi-sg/tdd-todo-list/issues"
+  },
+  "homepage": "https://github.com/wdi-sg/tdd-todo-list#readme",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

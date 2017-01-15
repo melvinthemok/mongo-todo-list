@@ -9,7 +9,10 @@ let todo
 */
 // We must be able to access the Todo list
 todos.destroyAll()
-assert.deepEqual(todos.list(), [], 'List should return an array of all todos')
+todos.list(function (results) {
+  console.log('data has loaded:', results)
+  assert.deepEqual(results, [], 'List should return an array of all todos')
+})
 
 // We must be able to create a new Todo and store in Todos array
 todos.destroyAll()
@@ -95,7 +98,7 @@ let todoBeforeUpdate = Object.assign({}, todos.list()[0])
 todos.update(todos.list()[0]._id, {
   name: 'Book movie tickets online at lunch',
   description: 'Try Lido then Cineleisure',
-  completed: true
+  completed: 'true'
 })
 todo = todos.list()[0]
 assert.notDeepEqual(todo, todoBeforeUpdate, 'Update should update Todo with specified id and new params')
